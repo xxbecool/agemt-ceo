@@ -3,7 +3,6 @@
 import { AlertTriangle, Clock, MapPin } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { getSeverityColor } from "@/utils/formatters";
 import type { InventoryAlert } from "@/types/dashboard.types";
 import { cn } from "@/utils/cn";
 
@@ -58,10 +57,7 @@ export function InventoryAlerts({ alerts, isLoading, maxItems = 5 }: InventoryAl
                 <div className="flex items-center gap-2 mb-0.5">
                   <p className="text-sm font-medium text-white truncate">{alert.productName}</p>
                   <Badge
-                    variant={
-                      alert.severity === "critical" ? "destructive" :
-                      alert.severity === "warning" ? "warning" : "default"
-                    }
+                    variant={alert.severity === "critical" ? "destructive" : alert.severity === "warning" ? "warning" : "default"}
                     className="text-xs py-0 flex-shrink-0"
                   >
                     {alert.severity}

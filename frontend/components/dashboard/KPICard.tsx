@@ -76,7 +76,6 @@ export function KPICard({ metric, index = 0 }: KPICardProps) {
   const isNegative = metric.changePercent < 0;
   const isNeutral = metric.changePercent === 0;
 
-  // For alerts, DOWN is good; for most others, UP is good
   const isGoodTrend =
     metric.id === "alerts"
       ? metric.trend === "down"
@@ -95,7 +94,6 @@ export function KPICard({ metric, index = 0 }: KPICardProps) {
       transition={{ duration: 0.4, delay: index * 0.1 }}
       className="relative rounded-xl border border-slate-700/50 bg-slate-800/50 backdrop-blur-sm p-5 overflow-hidden hover:border-slate-600/50 transition-all duration-300 group"
     >
-      {/* Background gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-transparent to-slate-900/20 pointer-events-none" />
 
       <div className="relative flex items-start justify-between mb-3">

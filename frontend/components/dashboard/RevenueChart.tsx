@@ -76,54 +76,13 @@ export function RevenueChart({ data, isLoading }: RevenueChartProps) {
               </linearGradient>
             </defs>
             <CartesianGrid strokeDasharray="3 3" stroke={CHART_COLORS.grid} />
-            <XAxis
-              dataKey="date"
-              tick={{ fill: "#94A3B8", fontSize: 11 }}
-              axisLine={{ stroke: CHART_COLORS.grid }}
-              tickLine={false}
-              interval="preserveStartEnd"
-            />
-            <YAxis
-              tick={{ fill: "#94A3B8", fontSize: 11 }}
-              axisLine={false}
-              tickLine={false}
-              tickFormatter={(v) => formatCurrency(v, { compact: true })}
-              width={65}
-            />
+            <XAxis dataKey="date" tick={{ fill: "#94A3B8", fontSize: 11 }} axisLine={{ stroke: CHART_COLORS.grid }} tickLine={false} interval="preserveStartEnd" />
+            <YAxis tick={{ fill: "#94A3B8", fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={(v) => formatCurrency(v, { compact: true })} width={65} />
             <Tooltip content={<CustomTooltip />} />
-            <Legend
-              wrapperStyle={{ paddingTop: "12px", fontSize: "12px", color: "#94A3B8" }}
-            />
-            <Area
-              type="monotone"
-              dataKey="previousYear"
-              name="Prior Year"
-              stroke={CHART_COLORS.secondary}
-              strokeWidth={1.5}
-              fill="url(#prevYearGrad)"
-              strokeDasharray="4 4"
-              dot={false}
-            />
-            <Area
-              type="monotone"
-              dataKey="target"
-              name="Target"
-              stroke={CHART_COLORS.muted}
-              strokeWidth={1.5}
-              fill="url(#targetGrad)"
-              strokeDasharray="4 4"
-              dot={false}
-            />
-            <Area
-              type="monotone"
-              dataKey="revenue"
-              name="Revenue"
-              stroke={CHART_COLORS.primary}
-              strokeWidth={2}
-              fill="url(#revenueGrad)"
-              dot={false}
-              activeDot={{ r: 4, fill: CHART_COLORS.primary }}
-            />
+            <Legend wrapperStyle={{ paddingTop: "12px", fontSize: "12px", color: "#94A3B8" }} />
+            <Area type="monotone" dataKey="previousYear" name="Prior Year" stroke={CHART_COLORS.secondary} strokeWidth={1.5} fill="url(#prevYearGrad)" strokeDasharray="4 4" dot={false} />
+            <Area type="monotone" dataKey="target" name="Target" stroke={CHART_COLORS.muted} strokeWidth={1.5} fill="url(#targetGrad)" strokeDasharray="4 4" dot={false} />
+            <Area type="monotone" dataKey="revenue" name="Revenue" stroke={CHART_COLORS.primary} strokeWidth={2} fill="url(#revenueGrad)" dot={false} activeDot={{ r: 4, fill: CHART_COLORS.primary }} />
           </AreaChart>
         </ResponsiveContainer>
       </CardContent>

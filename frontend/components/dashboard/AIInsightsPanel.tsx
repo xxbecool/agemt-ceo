@@ -81,10 +81,7 @@ export function AIInsightsPanel({ insights, isLoading }: AIInsightsPanelProps) {
                     {insight.metric && (
                       <div className="flex items-center gap-2 mt-2">
                         <span className="text-xs text-slate-500">{insight.metric.label}:</span>
-                        <span className={cn(
-                          "text-xs font-semibold flex items-center gap-1",
-                          isPositiveMetric ? "text-emerald-400" : "text-red-400"
-                        )}>
+                        <span className={cn("text-xs font-semibold flex items-center gap-1", isPositiveMetric ? "text-emerald-400" : "text-red-400")}>
                           {isPositiveMetric ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
                           {insight.metric.value}
                         </span>
