@@ -18,8 +18,6 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-    # ── Enum types ──────────────────────────────────────────────────────────────────────
-
     op.execute(
         "CREATE TYPE userrole AS ENUM ('CEO','ADMIN','OPERATIONS_MANAGER','SALES_MANAGER','ANALYST')"
     )
@@ -39,7 +37,6 @@ def upgrade() -> None:
         "CREATE TYPE forecasttype AS ENUM ('revenue','inventory','demand')"
     )
 
-    # ── tenants ───────────────────────────────────────────────────────────────────────
     op.create_table(
         "tenants",
         sa.Column("id", postgresql.UUID(as_uuid=True), primary_key=True),
@@ -53,7 +50,6 @@ def upgrade() -> None:
     )
     op.create_index("ix_tenants_slug", "tenants", ["slug"])
 
-    # ── users ────────────────────────────────────────────────────────────────────────
     op.create_table(
         "users",
         sa.Column("id", postgresql.UUID(as_uuid=True), primary_key=True),
@@ -74,7 +70,6 @@ def upgrade() -> None:
     op.create_index("ix_users_email", "users", ["email"])
     op.create_index("ix_users_tenant_id", "users", ["tenant_id"])
 
-    # ── branches ───────────────────────────────────────────────────────────────────────
     op.create_table(
         "branches",
         sa.Column("id", postgresql.UUID(as_uuid=True), primary_key=True),
@@ -96,7 +91,6 @@ def upgrade() -> None:
     op.create_index("ix_branches_tenant_id", "branches", ["tenant_id"])
     op.create_index("ix_branches_code", "branches", ["code"])
 
-    # ── warehouses ──────────────────────────────────────────────────────────────────────
     op.create_table(
         "warehouses",
         sa.Column("id", postgresql.UUID(as_uuid=True), primary_key=True),
@@ -114,7 +108,6 @@ def upgrade() -> None:
     )
     op.create_index("ix_warehouses_tenant_id", "warehouses", ["tenant_id"])
 
-    # ── products ───────────────────────────────────────────────────────────────────────
     op.create_table(
         "products",
         sa.Column("id", postgresql.UUID(as_uuid=True), primary_key=True),
@@ -137,7 +130,6 @@ def upgrade() -> None:
     op.create_index("ix_products_tenant_id", "products", ["tenant_id"])
     op.create_index("ix_products_sku", "products", ["sku"])
 
-    # ── sales ────────────────────────────────────────────────────────────────────────
     op.create_table(
         "sales",
         sa.Column("id", postgresql.UUID(as_uuid=True), primary_key=True),
@@ -163,7 +155,6 @@ def upgrade() -> None:
     op.create_index("ix_sales_sale_date", "sales", ["sale_date"])
     op.create_index("ix_sales_invoice_number", "sales", ["invoice_number"])
 
-    # ── sale_items ──────────────────────────────────────────────────────────────────────
     op.create_table(
         "sale_items",
         sa.Column("id", postgresql.UUID(as_uuid=True), primary_key=True),
@@ -184,7 +175,6 @@ def upgrade() -> None:
     op.create_index("ix_sale_items_product_id", "sale_items", ["product_id"])
     op.create_index("ix_sale_items_tenant_id", "sale_items", ["tenant_id"])
 
-    # ── inventory_items ─────────────────────────────────────────────────────────────────────
     op.create_table(
         "inventory_items",
         sa.Column("id", postgresql.UUID(as_uuid=True), primary_key=True),
@@ -213,7 +203,6 @@ def upgrade() -> None:
     op.create_index("ix_inventory_items_warehouse_id", "inventory_items", ["warehouse_id"])
     op.create_index("ix_inventory_items_product_id", "inventory_items", ["product_id"])
 
-    # ── alerts ────────────────────────────────────────────────────────────────────────
     op.create_table(
         "alerts",
         sa.Column("id", postgresql.UUID(as_uuid=True), primary_key=True),
@@ -246,7 +235,6 @@ def upgrade() -> None:
     op.create_index("ix_alerts_tenant_id", "alerts", ["tenant_id"])
     op.create_index("ix_alerts_alert_type", "alerts", ["alert_type"])
 
-    # ── forecast_records ─────────────────────────────────────────────────────────────────────
     op.create_table(
         "forecast_records",
         sa.Column("id", postgresql.UUID(as_uuid=True), primary_key=True),

@@ -59,7 +59,6 @@ class RevenueForecast:
             current_period_rev = df.tail(forecast_days)["y"].sum()
             growth_pct = ((total_predicted - current_period_rev) / current_period_rev * 100) if current_period_rev else 0
 
-            # Calculate MAE on holdout
             holdout = df.tail(7)
             mae = float(np.mean(np.abs(holdout["y"].values - forecast_df[forecast_df["ds"].isin(holdout["ds"])]["yhat"].values[:len(holdout)]))) if len(holdout) > 0 else 0
             mape = float(np.mean(np.abs((holdout["y"].values - forecast_df[forecast_df["ds"].isin(holdout["ds"])]["yhat"].values[:len(holdout)]) / holdout["y"].values))) * 100 if len(holdout) > 0 else 0
@@ -82,7 +81,6 @@ class RevenueForecast:
         forecast_points = []
         for i in range(1, forecast_days + 1):
             forecast_date = today + timedelta(days=i)
-            # Add weekly pattern
             dow_factor = 0.7 if forecast_date.weekday() >= 5 else 1.0
             trend = 1 + (i / forecast_days) * 0.08
             yhat = base_daily * dow_factor * trend

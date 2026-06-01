@@ -24,7 +24,6 @@ from models.alert import Alert, AlertType, AlertSeverity
 random.seed(42)
 
 PRODUCTS_DATA = [
-    # Electronics
     ("EL001", '4K Smart TV 55"', ProductCategory.ELECTRONICS, 1200, 700),
     ("EL002", 'Laptop Pro 15"', ProductCategory.ELECTRONICS, 1500, 900),
     ("EL003", "Wireless Headphones", ProductCategory.ELECTRONICS, 250, 120),
@@ -35,7 +34,6 @@ PRODUCTS_DATA = [
     ("EL008", "Gaming Console", ProductCategory.ELECTRONICS, 499, 280),
     ("EL009", "Mechanical Keyboard", ProductCategory.ELECTRONICS, 180, 85),
     ("EL010", "USB-C Hub 7-Port", ProductCategory.ELECTRONICS, 80, 35),
-    # Health
     ("HE001", "Vitamin D3 1000IU", ProductCategory.HEALTH, 25, 8),
     ("HE002", "Whey Protein 5lb", ProductCategory.HEALTH, 65, 28),
     ("HE003", "Omega-3 Fish Oil", ProductCategory.HEALTH, 30, 12),
@@ -46,7 +44,6 @@ PRODUCTS_DATA = [
     ("HE008", "BCAA Powder", ProductCategory.HEALTH, 40, 16),
     ("HE009", "Melatonin 5mg", ProductCategory.HEALTH, 20, 7),
     ("HE010", "Zinc + Magnesium", ProductCategory.HEALTH, 28, 11),
-    # Food
     ("FD001", "Organic Coffee Beans 1kg", ProductCategory.FOOD, 32, 14),
     ("FD002", "Extra Virgin Olive Oil 1L", ProductCategory.FOOD, 22, 9),
     ("FD003", "Organic Oats 2kg", ProductCategory.FOOD, 15, 6),
@@ -57,7 +54,6 @@ PRODUCTS_DATA = [
     ("FD008", "Green Tea 100 bags", ProductCategory.FOOD, 16, 6),
     ("FD009", "Coconut Water 1L", ProductCategory.FOOD, 4, 1.5),
     ("FD010", "Mixed Nuts 500g", ProductCategory.FOOD, 20, 9),
-    # Clothing
     ("CL001", "Performance T-Shirt", ProductCategory.CLOTHING, 45, 18),
     ("CL002", "Running Shorts", ProductCategory.CLOTHING, 55, 22),
     ("CL003", "Athletic Hoodie", ProductCategory.CLOTHING, 85, 35),
@@ -68,7 +64,6 @@ PRODUCTS_DATA = [
     ("CL008", "Baseball Cap", ProductCategory.CLOTHING, 30, 12),
     ("CL009", "Ankle Socks 6-Pack", ProductCategory.CLOTHING, 22, 8),
     ("CL010", "Winter Jacket", ProductCategory.CLOTHING, 180, 80),
-    # Sports
     ("SP001", "Yoga Mat Pro", ProductCategory.SPORTS, 55, 22),
     ("SP002", "Resistance Bands Set", ProductCategory.SPORTS, 35, 14),
     ("SP003", "Dumbbell Set 20kg", ProductCategory.SPORTS, 150, 65),
@@ -97,13 +92,10 @@ WAREHOUSES_DATA = [
 
 
 def revenue_for_date(d: date, branch_multiplier: float, base: float) -> float:
-    # Weekly pattern
     dow = d.weekday()
     dow_factors = [0.95, 1.0, 1.05, 1.08, 1.15, 0.75, 0.65]
-    # Monthly trend — slight upward over the year
     day_of_year = (d - date(d.year, 1, 1)).days
     trend = 1 + (day_of_year / 365) * 0.12
-    # Seasonal peaks
     month = d.month
     seasonal = 1.25 if month == 12 else (1.15 if month in [11, 3] else 1.0)
     noise = random.uniform(0.88, 1.12)
@@ -114,7 +106,6 @@ async def seed(db: AsyncSession):
     print("Creating tables...")
     await create_tables()
 
-    # Check if already seeded
     existing = await db.execute(select(Tenant).limit(1))
     if existing.scalar_one_or_none():
         print("Already seeded. Skipping.")
@@ -148,7 +139,7 @@ async def seed(db: AsyncSession):
     await db.flush()
 
     print("Seeding branches...")
-    branch_multipliers = [1.25, 0.82, 0.95, 1.10, 0.88]  # North is strongest
+    branch_multipliers = [1.25, 0.82, 0.95, 1.10, 0.88]
     branches = []
     for (name, code, addr, city, region), mult in zip(BRANCHES_DATA, branch_multipliers):
         b = Branch(
@@ -184,7 +175,6 @@ async def seed(db: AsyncSession):
 
     print("Seeding inventory...")
     for p in products:
-        # Assign to a random warehouse, some items low stock
         wh = random.choice(warehouses)
         max_cap = random.randint(200, 600)
         qty_pct = random.choice([0.05, 0.08, 0.15, 0.35, 0.50, 0.65, 0.80])
