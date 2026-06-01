@@ -54,7 +54,6 @@ export function TopBar() {
       </div>
 
       <div className="flex items-center gap-2">
-        {/* Refresh */}
         <Button
           variant="ghost"
           size="icon"
@@ -65,7 +64,6 @@ export function TopBar() {
           <RefreshCw className="w-4 h-4" />
         </Button>
 
-        {/* Theme toggle */}
         <Button
           variant="ghost"
           size="icon"
@@ -75,7 +73,6 @@ export function TopBar() {
           {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
         </Button>
 
-        {/* Notifications */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="h-8 w-8 relative">

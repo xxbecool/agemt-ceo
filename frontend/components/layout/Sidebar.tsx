@@ -15,7 +15,6 @@ import {
   ChevronRight,
   Zap,
   LogOut,
-  User,
 } from "lucide-react";
 import { cn } from "@/utils/cn";
 import { useUIStore } from "@/store/ui.store";
