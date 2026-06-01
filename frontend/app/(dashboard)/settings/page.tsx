@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { User, Bell, Shield, Palette, Building2, Save } from "lucide-react";
+import { User, Bell, Shield, Building2, Save } from "lucide-react";
 import { toast } from "sonner";
 import { useAuthStore } from "@/store/auth.store";
 
@@ -88,12 +88,12 @@ export default function SettingsPage() {
             <div className="space-y-3">
               <div>
                 <label className="block text-xs font-medium text-slate-400 mb-1">Current Password</label>
-                <input type="password" placeholder="········"
+                <input type="password" placeholder="••••••••"
                   className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
               </div>
               <div>
                 <label className="block text-xs font-medium text-slate-400 mb-1">New Password</label>
-                <input type="password" placeholder="········"
+                <input type="password" placeholder="••••••••"
                   className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
               </div>
             </div>
