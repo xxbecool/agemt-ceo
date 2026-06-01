@@ -82,7 +82,6 @@ async def login(
             detail="Account is disabled. Contact your administrator.",
         )
 
-    # Update last login
     await db.execute(
         update(User)
         .where(User.id == user.id)

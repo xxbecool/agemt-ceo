@@ -19,16 +19,6 @@ async def ai_query(
     current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ):
-    """
-    Answer a natural language executive question using the AI agent.
-    The agent uses real business data tools to provide accurate, data-driven answers.
-
-    Example questions:
-    - "Why did sales drop yesterday?"
-    - "Which branch is performing best this month?"
-    - "What are the top 5 products by revenue?"
-    - "Do we have any critical inventory issues?"
-    """
     agent = ExecutiveAgent(
         db=db,
         tenant_id=str(current_user.tenant_id),
@@ -36,7 +26,6 @@ async def ai_query(
     )
     result = await agent.query(payload.query)
 
-    # result is a dict from the agent
     if isinstance(result, dict):
         answer = result.get("answer", "")
         sources = result.get("sources", [])
@@ -68,10 +57,6 @@ async def get_ai_insights(
     current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ):
-    """
-    Generate proactive AI insights from current business data.
-    Returns 4-5 executive-level insights with severity and recommendations.
-    """
     agent = ExecutiveAgent(
         db=db,
         tenant_id=str(current_user.tenant_id),
@@ -91,10 +76,6 @@ async def generate_ai_report(
     current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ):
-    """
-    Generate a comprehensive AI-written executive report.
-    Returns an AI-authored summary with key metrics, insights, and recommendations.
-    """
     agent = ExecutiveAgent(
         db=db,
         tenant_id=str(current_user.tenant_id),

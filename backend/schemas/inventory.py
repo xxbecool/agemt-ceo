@@ -31,7 +31,7 @@ class InventoryAlertResponse(BaseModel):
     product_name: str
     sku: str
     warehouse_name: str
-    alert_type: str  # low_stock, overstock, out_of_stock, reorder
+    alert_type: str
     severity: str
     current_quantity: int
     threshold_quantity: int

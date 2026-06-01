@@ -91,7 +91,6 @@ async def get_dashboard_summary(
     today = date.today()
     mtd_start = today.replace(day=1)
 
-    # MTD revenue
     mtd = await db.execute(
         select(
             func.sum(Sale.total_amount).label("revenue"),
@@ -106,7 +105,6 @@ async def get_dashboard_summary(
     orders = int(row.orders or 0)
     gp = float(row.gross_profit or 0)
 
-    # Previous month
     prev_end = mtd_start - timedelta(days=1)
     prev_start = prev_end.replace(day=1)
     prev_mtd = await db.execute(
@@ -117,7 +115,6 @@ async def get_dashboard_summary(
     prev_rev = float(prev_mtd.scalar() or 0)
     growth_pct = ((rev - prev_rev) / prev_rev * 100) if prev_rev else 0
 
-    # Inventory health
     inv_total = await db.execute(
         select(func.count(InventoryItem.id)).where(InventoryItem.tenant_id == tid)
     )
@@ -137,7 +134,6 @@ async def get_dashboard_summary(
         round((total_inv - critical_inv) / total_inv * 100, 1) if total_inv > 0 else 100.0
     )
 
-    # Active alerts
     alert_count = await db.execute(
         select(func.count(Alert.id)).where(
             and_(Alert.tenant_id == tid, Alert.is_read == False)  # noqa

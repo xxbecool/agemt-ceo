@@ -13,7 +13,7 @@ class DailySalesResponse(BaseModel):
     units_sold: int
     avg_transaction_value: float
     prev_day_revenue: Optional[float] = None
-    day_over_day_change: Optional[float] = None  # percentage
+    day_over_day_change: Optional[float] = None
     day_over_day_change_pct: Optional[float] = None
 
 

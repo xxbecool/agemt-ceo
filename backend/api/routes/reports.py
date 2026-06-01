@@ -20,10 +20,6 @@ async def generate_report(
     current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ):
-    """
-    Generate a comprehensive executive report with real data.
-    Sections include: sales, inventory, KPIs, forecasts, alerts.
-    """
     svc = ReportService(db)
     return await svc.generate_report(current_user.tenant_id, payload)
 
@@ -33,7 +29,6 @@ async def list_reports(
     current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ):
-    """Return a list of available report types with metadata."""
     today = date.today()
     reports = [
         {
@@ -78,10 +73,6 @@ async def quick_report(
     current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ):
-    """
-    Generate a quick report using default settings.
-    report_type: daily | weekly | monthly | quarterly
-    """
     valid_types = {"daily", "weekly", "monthly", "quarterly"}
     if report_type not in valid_types:
         from fastapi import HTTPException, status
