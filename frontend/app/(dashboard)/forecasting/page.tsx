@@ -59,7 +59,6 @@ export default function ForecastingPage() {
                 sub: "Coefficient of determination",
                 icon: Brain,
                 color: "text-blue-400 bg-blue-400/10",
-                good: true,
               },
               {
                 label: "MAPE",
@@ -67,7 +66,6 @@ export default function ForecastingPage() {
                 sub: "Mean absolute percentage error",
                 icon: Target,
                 color: "text-emerald-400 bg-emerald-400/10",
-                good: true,
               },
               {
                 label: "RMSE",
@@ -75,7 +73,6 @@ export default function ForecastingPage() {
                 sub: "Root mean square error",
                 icon: TrendingUp,
                 color: "text-amber-400 bg-amber-400/10",
-                good: false,
               },
               {
                 label: "Last Trained",
@@ -83,7 +80,6 @@ export default function ForecastingPage() {
                 sub: "Model freshness",
                 icon: Calendar,
                 color: "text-purple-400 bg-purple-400/10",
-                good: true,
               },
             ].map((card) => {
               const Icon = card.icon;
