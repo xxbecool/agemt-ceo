@@ -19,11 +19,11 @@ class AIQueryResponse(BaseModel):
 
 
 class ReportGenerateRequest(BaseModel):
-    report_type: str  # daily, weekly, monthly, quarterly, custom
+    report_type: str
     period_start: Optional[str] = None
     period_end: Optional[str] = None
     include_sections: List[str] = ["sales", "inventory", "kpis", "forecasts", "alerts"]
-    format: str = "json"  # json, pdf, excel
+    format: str = "json"
     recipient_email: Optional[str] = None
 
 

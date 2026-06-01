@@ -9,7 +9,7 @@ class KPIMetric(BaseModel):
     unit: str
     previous_value: Optional[float] = None
     change_pct: Optional[float] = None
-    trend: Optional[str] = None  # up, down, stable
+    trend: Optional[str] = None
     target: Optional[float] = None
     target_achievement_pct: Optional[float] = None
 
