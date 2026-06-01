@@ -1,11 +1,7 @@
 {
   "version": 2,
-  "name": "executiveai",
-  "buildCommand": "npm install && npm run build",
-  "outputDirectory": ".next",
-  "installCommand": "npm install",
-  "framework": "nextjs",
   "rootDirectory": "frontend",
+  "framework": "nextjs",
   "env": {
     "NEXT_PUBLIC_APP_NAME": "ExecutiveAI",
     "NEXT_PUBLIC_APP_VERSION": "1.0.0"
