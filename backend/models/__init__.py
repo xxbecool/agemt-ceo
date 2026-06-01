@@ -9,19 +9,7 @@ from models.alert import Alert, AlertSeverity, AlertType
 from models.forecast import ForecastRecord
 
 __all__ = [
-    "Tenant",
-    "User",
-    "UserRole",
-    "Product",
-    "ProductCategory",
-    "Branch",
-    "Warehouse",
-    "Sale",
-    "SaleItem",
-    "InventoryItem",
-    "StockStatus",
-    "Alert",
-    "AlertSeverity",
-    "AlertType",
-    "ForecastRecord",
+    "Tenant", "User", "UserRole", "Product", "ProductCategory",
+    "Branch", "Warehouse", "Sale", "SaleItem", "InventoryItem",
+    "StockStatus", "Alert", "AlertSeverity", "AlertType", "ForecastRecord",
 ]

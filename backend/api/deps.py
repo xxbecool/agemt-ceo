@@ -1,7 +1,3 @@
-"""
-Dependency injection for FastAPI routes.
-Provides: JWT authentication, RBAC role checks, DB session.
-"""
 from typing import Annotated
 import uuid
 
@@ -21,10 +17,6 @@ async def get_current_user(
     token: Annotated[str, Depends(oauth2_scheme)],
     db: AsyncSession = Depends(get_db),
 ) -> User:
-    """
-    Validate the JWT access token and return the corresponding User object.
-    Raises HTTP 401 if the token is invalid or the user is inactive.
-    """
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -50,15 +42,10 @@ async def get_current_user(
     return user
 
 
-# Annotated dependency type for route handlers
 CurrentUser = Annotated[User, Depends(get_current_user)]
 
 
 def require_roles(*roles: UserRole):
-    """
-    Factory that returns a FastAPI dependency checking the current user's role.
-    Usage: router.get("/admin", dependencies=[Depends(require_roles(UserRole.CEO, UserRole.ADMIN))])
-    """
     async def _check(current_user: CurrentUser) -> User:
         if current_user.role not in roles:
             raise HTTPException(
@@ -69,26 +56,6 @@ def require_roles(*roles: UserRole):
     return _check
 
 
-# Pre-built RBAC dependencies
-RequireCEO = Depends(
-    require_roles(UserRole.CEO, UserRole.ADMIN)
-)
-
-RequireManager = Depends(
-    require_roles(
-        UserRole.CEO,
-        UserRole.ADMIN,
-        UserRole.OPERATIONS_MANAGER,
-        UserRole.SALES_MANAGER,
-    )
-)
-
-RequireAnalyst = Depends(
-    require_roles(
-        UserRole.CEO,
-        UserRole.ADMIN,
-        UserRole.OPERATIONS_MANAGER,
-        UserRole.SALES_MANAGER,
-        UserRole.ANALYST,
-    )
-)
+RequireCEO = Depends(require_roles(UserRole.CEO, UserRole.ADMIN))
+RequireManager = Depends(require_roles(UserRole.CEO, UserRole.ADMIN, UserRole.OPERATIONS_MANAGER, UserRole.SALES_MANAGER))
+RequireAnalyst = Depends(require_roles(UserRole.CEO, UserRole.ADMIN, UserRole.OPERATIONS_MANAGER, UserRole.SALES_MANAGER, UserRole.ANALYST))

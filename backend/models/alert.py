@@ -29,18 +29,10 @@ class AlertType(str, Enum):
 class Alert(Base):
     __tablename__ = "alerts"
 
-    id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
-    )
-    tenant_id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), ForeignKey("tenants.id", ondelete="CASCADE"), nullable=False, index=True
-    )
-    alert_type: Mapped[AlertType] = mapped_column(
-        SAEnum(AlertType, name="alerttype"), nullable=False, index=True
-    )
-    severity: Mapped[AlertSeverity] = mapped_column(
-        SAEnum(AlertSeverity, name="alertseverity"), nullable=False, default=AlertSeverity.WARNING
-    )
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    tenant_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("tenants.id", ondelete="CASCADE"), nullable=False, index=True)
+    alert_type: Mapped[AlertType] = mapped_column(SAEnum(AlertType, name="alerttype"), nullable=False, index=True)
+    severity: Mapped[AlertSeverity] = mapped_column(SAEnum(AlertSeverity, name="alertseverity"), nullable=False, default=AlertSeverity.WARNING)
     title: Mapped[str] = mapped_column(String(500), nullable=False)
     message: Mapped[str] = mapped_column(Text, nullable=False)
     entity_type: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
@@ -50,14 +42,9 @@ class Alert(Base):
     is_resolved: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     resolved_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
     resolved_by: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
-    created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), server_default=func.now(), nullable=False
-    )
-    updated_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False
-    )
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)
 
-    # Relationships
     tenant: Mapped["Tenant"] = relationship("Tenant", back_populates="alerts")
 
     def __repr__(self) -> str:
