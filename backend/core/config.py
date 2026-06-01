@@ -57,9 +57,9 @@ class Settings(BaseSettings):
     FORECAST_DAYS_LONG: int = 90
 
     # Alerts
-    LOW_STOCK_THRESHOLD: float = 0.20  # 20% of max capacity
-    OVERSTOCK_THRESHOLD: float = 0.80  # 80% of max capacity
-    SALES_DROP_THRESHOLD: float = 0.15  # 15% drop triggers alert
+    LOW_STOCK_THRESHOLD: float = 0.20
+    OVERSTOCK_THRESHOLD: float = 0.80
+    SALES_DROP_THRESHOLD: float = 0.15
 
 
 settings = Settings()

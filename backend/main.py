@@ -19,10 +19,8 @@ from api.routes import auth, sales, inventory, analytics, ai, forecasting, repor
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application lifespan: startup and shutdown events."""
-    # Startup: ensure tables exist (Alembic handles migrations in production)
     await create_tables()
     yield
-    # Shutdown: clean up resources if needed
 
 
 app = FastAPI(
@@ -39,8 +37,6 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# ── Middleware (order matters: outermost first) ────────────────────────────────────────────
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.allowed_origins_list,
@@ -51,8 +47,6 @@ app.add_middleware(
 
 app.add_middleware(RequestLoggingMiddleware)
 app.add_middleware(TenantMiddleware)
-
-# ── Routers ──────────────────────────────────────────────────────────────────────────
 
 API = settings.API_V1_STR
 
@@ -65,12 +59,9 @@ app.include_router(forecasting.router, prefix=f"{API}/forecasting", tags=["Forec
 app.include_router(reports.router,     prefix=f"{API}/reports",     tags=["Reports"])
 app.include_router(alerts.router,      prefix=f"{API}/alerts",      tags=["Alerts"])
 
-# ── Health & Meta ──────────────────────────────────────────────────────────────────────
-
 
 @app.get("/health", tags=["Health"])
 async def health():
-    """Health check endpoint for load balancers and monitoring."""
     return {
         "status": "healthy",
         "service": settings.APP_NAME,
