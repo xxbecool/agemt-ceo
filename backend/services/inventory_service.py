@@ -28,7 +28,6 @@ class InventoryService:
     def _calculate_stock_turnover(
         self, avg_daily_consumption: float, max_capacity: int
     ) -> Optional[float]:
-        """Annual stock turnover = (annual consumption) / avg_inventory."""
         if max_capacity <= 0:
             return None
         annual_consumption = avg_daily_consumption * 365

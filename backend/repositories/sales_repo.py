@@ -22,7 +22,6 @@ class SalesRepository(BaseRepository[Sale]):
         end_date: date,
         branch_id: Optional[UUID] = None,
     ) -> List[dict]:
-        """Returns daily revenue aggregates."""
         filters = [
             Sale.tenant_id == tenant_id,
             Sale.sale_date >= start_date,
@@ -63,7 +62,6 @@ class SalesRepository(BaseRepository[Sale]):
         year: int,
         branch_id: Optional[UUID] = None,
     ) -> List[dict]:
-        """Returns monthly revenue for a given year."""
         filters = [
             Sale.tenant_id == tenant_id,
             func.extract("year", Sale.sale_date) == year,
@@ -110,7 +108,6 @@ class SalesRepository(BaseRepository[Sale]):
         end_date: date,
         limit: int = 10,
     ) -> List[dict]:
-        """Returns top products by revenue for a period."""
         result = await self.session.execute(
             select(
                 Product.id.label("product_id"),
@@ -154,7 +151,6 @@ class SalesRepository(BaseRepository[Sale]):
         start_date: date,
         end_date: date,
     ) -> List[dict]:
-        """Returns revenue aggregates per branch."""
         result = await self.session.execute(
             select(
                 Branch.id.label("branch_id"),
@@ -196,7 +192,6 @@ class SalesRepository(BaseRepository[Sale]):
         start_date: date,
         end_date: date,
     ) -> List[dict]:
-        """Returns daily revenue time series for forecasting."""
         result = await self.session.execute(
             select(
                 Sale.sale_date,
@@ -219,7 +214,6 @@ class SalesRepository(BaseRepository[Sale]):
         start_date: date,
         end_date: date,
     ) -> dict:
-        """Returns total units sold by sale_date."""
         result = await self.session.execute(
             select(
                 Sale.sale_date,

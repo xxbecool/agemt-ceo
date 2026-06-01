@@ -30,7 +30,6 @@ class AnalyticsService:
         period_start: date,
         period_end: date,
     ) -> KPIResponse:
-        # Current period aggregates
         rows = await self.repo.get_daily_revenue(tenant_id, period_start, period_end)
         total_rev = sum(r["total_revenue"] for r in rows)
         total_cost = sum(r["total_cost"] for r in rows)
@@ -39,7 +38,6 @@ class AnalyticsService:
         avg_tx_val = total_rev / total_tx if total_tx > 0 else 0.0
         margin = (total_profit / total_rev * 100) if total_rev > 0 else 0.0
 
-        # Previous period
         delta_days = (period_end - period_start).days + 1
         prev_start = period_start - timedelta(days=delta_days)
         prev_end = period_start - timedelta(days=1)
@@ -190,7 +188,6 @@ class AnalyticsService:
         total_rev = sum(r["total_revenue"] for r in rows) or 1
         total_units = sum(r["total_units_sold"] for r in rows)
 
-        # Previous period
         delta = (period_end - period_start).days + 1
         prev_start = period_start - timedelta(days=delta)
         prev_end = period_start - timedelta(days=1)
@@ -245,7 +242,6 @@ class AnalyticsService:
         tenant_id: UUID,
         lookback_days: int = 30,
     ) -> List[AnomalyDetectionResponse]:
-        """Simple z-score based anomaly detection on daily revenue."""
         end_date = date.today()
         start_date = end_date - timedelta(days=lookback_days)
         rows = await self.repo.get_daily_revenue(tenant_id, start_date, end_date)

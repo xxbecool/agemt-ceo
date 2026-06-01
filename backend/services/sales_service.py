@@ -38,7 +38,6 @@ class SalesService:
             tenant_id, start_date, end_date, branch_id
         )
 
-        # Also fetch previous period for comparison
         delta = (end_date - start_date).days + 1
         prev_start = start_date - timedelta(days=delta)
         prev_end = start_date - timedelta(days=1)
@@ -47,7 +46,6 @@ class SalesService:
         )
         prev_map = {r["date"]: r for r in prev_rows}
 
-        # Units sold
         units_map = await self.repo.get_units_sold_by_date(
             tenant_id, start_date, end_date
         )
@@ -96,12 +94,10 @@ class SalesService:
             tenant_id, year - 1, branch_id
         )
         prev_year_map = {r["month"]: r for r in prev_year_rows}
-        current_map = {r["month"]: r for r in current_year_rows}
 
         results = []
         for i, r in enumerate(current_year_rows):
             month_num = r["month"]
-            # Month over month: compare to previous month
             if i > 0:
                 prev_month_data = current_year_rows[i - 1]
                 prev_rev = prev_month_data["total_revenue"]
@@ -112,7 +108,6 @@ class SalesService:
             if prev_rev and prev_rev > 0:
                 mom_pct = ((r["total_revenue"] - prev_rev) / prev_rev) * 100
 
-            # Year over year
             prev_year_data = prev_year_map.get(month_num)
             yoy_pct = None
             if prev_year_data and prev_year_data["total_revenue"] > 0:
@@ -135,7 +130,7 @@ class SalesService:
                     gross_profit=r["gross_profit"],
                     profit_margin=round(profit_margin, 2),
                     transaction_count=r["transaction_count"],
-                    units_sold=0,  # filled below if needed
+                    units_sold=0,
                     prev_month_revenue=prev_rev,
                     month_over_month_growth_pct=round(mom_pct, 2) if mom_pct is not None else None,
                     year_over_year_growth_pct=round(yoy_pct, 2) if yoy_pct is not None else None,
@@ -218,7 +213,6 @@ class SalesService:
         rows = await self.repo.get_branch_performance(tenant_id, start_date, end_date)
         total_rev = sum(r["total_revenue"] for r in rows) or 1
 
-        # Previous period for growth
         delta = (end_date - start_date).days + 1
         prev_start = start_date - timedelta(days=delta)
         prev_end = start_date - timedelta(days=1)

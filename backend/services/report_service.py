@@ -25,7 +25,6 @@ class ReportService:
     ) -> ReportResponse:
         today = date.today()
 
-        # Determine period
         if request.period_start and request.period_end:
             period_start = date.fromisoformat(request.period_start)
             period_end = date.fromisoformat(request.period_end)

@@ -32,7 +32,6 @@ async def get_sales_summary(db: AsyncSession, tenant_id: str, period: str = "7d"
     gp = float(row.gross_profit or 0)
     orders = int(row.orders or 0)
 
-    # Daily breakdown
     daily_result = await db.execute(
         select(Sale.sale_date, func.sum(Sale.total_amount).label("rev"))
         .where(and_(Sale.tenant_id == tenant_id, Sale.sale_date >= start_date))
@@ -132,7 +131,6 @@ async def get_kpi_metrics(db: AsyncSession, tenant_id: str) -> dict:
         )
     )
 
-    # Yesterday vs day before
     yesterday = today - timedelta(days=1)
     day_before = today - timedelta(days=2)
 

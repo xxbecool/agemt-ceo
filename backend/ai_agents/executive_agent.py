@@ -25,10 +25,6 @@ from ai_agents.tools import (
 )
 
 
-# ---------------------------------------------------------------------------
-# LangGraph ReAct agent (imported lazily to avoid import errors if not installed)
-# ---------------------------------------------------------------------------
-
 def _build_langgraph_agent(tenant_id: str, db: AsyncSession):
     """Build and return a compiled LangGraph ReAct agent."""
     from langchain_anthropic import ChatAnthropic
@@ -42,11 +38,9 @@ def _build_langgraph_agent(tenant_id: str, db: AsyncSession):
         max_tokens=2048,
     )
 
-    # Define tools as sync wrappers that will be called with async context
     import asyncio
 
     def _run(coro):
-        """Run a coroutine from a sync context."""
         try:
             loop = asyncio.get_event_loop()
             if loop.is_running():
@@ -64,7 +58,6 @@ def _build_langgraph_agent(tenant_id: str, db: AsyncSession):
         """
         Get aggregated sales summary for a specific time period.
         period can be: 1d (yesterday), 7d (last 7 days), 30d (last 30 days), 90d (last 90 days).
-        Returns total revenue, orders, gross profit, and daily breakdown.
         """
         try:
             result = _run(get_sales_summary(db, tenant_id, period))
@@ -76,7 +69,6 @@ def _build_langgraph_agent(tenant_id: str, db: AsyncSession):
     def tool_get_inventory_status() -> str:
         """
         Get current inventory status including critical stock items, low stock items, and healthy items.
-        Returns total SKUs, items needing reorder, and items with critical/low stock levels.
         """
         try:
             result = _run(get_inventory_status(db, tenant_id))
@@ -100,7 +92,6 @@ def _build_langgraph_agent(tenant_id: str, db: AsyncSession):
     def tool_get_anomalies(lookback_days: int = 30) -> str:
         """
         Detect revenue anomalies over the last N days using statistical analysis.
-        Returns anomalies with their dates, actual vs expected revenue, and severity.
         lookback_days: number of days to analyze (default: 30).
         """
         try:
@@ -113,7 +104,6 @@ def _build_langgraph_agent(tenant_id: str, db: AsyncSession):
     def tool_get_top_products(days: int = 30) -> str:
         """
         Get top 5 products by revenue for the last N days.
-        Returns product names, categories, revenue, and units sold.
         days: lookback period in days (default: 30).
         """
         try:
@@ -135,11 +125,6 @@ def _build_langgraph_agent(tenant_id: str, db: AsyncSession):
 
 
 class ExecutiveAgent:
-    """
-    Production-grade ExecutiveAI agent backed by LangGraph + Anthropic Claude.
-    Falls back to direct API calls when LangGraph is unavailable.
-    """
-
     def __init__(
         self,
         db: AsyncSession,
@@ -160,7 +145,6 @@ class ExecutiveAgent:
         return self._anthropic_client
 
     async def _gather_context(self) -> str:
-        """Gather all relevant business context for the AI."""
         sales_7d = await get_sales_summary(self.db, self.tenant_id, "7d")
         sales_30d = await get_sales_summary(self.db, self.tenant_id, "30d")
         inventory = await get_inventory_status(self.db, self.tenant_id)
@@ -213,10 +197,6 @@ Recent Anomalies: {json.dumps(anomaly_data['anomalies'][:3], indent=2)}
         return context
 
     async def query(self, user_question: str) -> dict:
-        """
-        Main entry point: answer a CEO question using LangGraph ReAct agent
-        or fall back to direct Anthropic API call.
-        """
         if not settings.ANTHROPIC_API_KEY:
             return {
                 "answer": self._mock_answer(user_question),
@@ -225,26 +205,20 @@ Recent Anomalies: {json.dumps(anomaly_data['anomalies'][:3], indent=2)}
                 "data_context": None,
             }
 
-        # Try LangGraph ReAct agent first
         try:
             return await self._query_with_langgraph(user_question)
-        except Exception as langgraph_err:
-            # Fall back to direct API call with pre-gathered context
+        except Exception:
             try:
                 return await self._query_direct(user_question)
             except Exception as direct_err:
                 return {
-                    "answer": (
-                        f"I encountered an issue processing your request. "
-                        f"Please check your API configuration. Error: {direct_err}"
-                    ),
+                    "answer": f"I encountered an issue processing your request. Error: {direct_err}",
                     "sources": [],
                     "agent_steps": [],
                     "data_context": None,
                 }
 
     async def _query_with_langgraph(self, question: str) -> dict:
-        """Use LangGraph ReAct agent to answer the question."""
         import asyncio
         from langchain_core.messages import HumanMessage
 
@@ -255,7 +229,6 @@ Recent Anomalies: {json.dumps(anomaly_data['anomalies'][:3], indent=2)}
 
         agent = _build_langgraph_agent(self.tenant_id, self.db)
 
-        # Run in thread pool since LangGraph tools are sync
         loop = asyncio.get_event_loop()
         result = await loop.run_in_executor(
             None,
@@ -298,7 +271,6 @@ Recent Anomalies: {json.dumps(anomaly_data['anomalies'][:3], indent=2)}
         }
 
     async def _query_direct(self, question: str) -> dict:
-        """Direct Anthropic API call with pre-gathered context."""
         context = await self._gather_context()
         system_prompt = EXECUTIVE_SYSTEM_PROMPT.format(
             company_name=self.company_name,
@@ -324,7 +296,6 @@ Recent Anomalies: {json.dumps(anomaly_data['anomalies'][:3], indent=2)}
         }
 
     async def generate_insights(self) -> list:
-        """Generate proactive executive insights from current data."""
         if not settings.ANTHROPIC_API_KEY:
             return self._mock_insights()
 
@@ -335,12 +306,7 @@ Recent Anomalies: {json.dumps(anomaly_data['anomalies'][:3], indent=2)}
                 model="claude-sonnet-4-6",
                 max_tokens=2048,
                 system="You are an executive business analyst. Respond ONLY with valid JSON array.",
-                messages=[
-                    {
-                        "role": "user",
-                        "content": f"{context}\n\n{INSIGHTS_PROMPT}",
-                    }
-                ],
+                messages=[{"role": "user", "content": f"{context}\n\n{INSIGHTS_PROMPT}"}],
             )
             text = message.content[0].text
             start = text.find("[")
@@ -352,7 +318,6 @@ Recent Anomalies: {json.dumps(anomaly_data['anomalies'][:3], indent=2)}
             return self._mock_insights()
 
     async def generate_report(self, report_type: str = "daily") -> dict:
-        """Generate an AI-written executive report."""
         if not settings.ANTHROPIC_API_KEY:
             return self._mock_report(report_type)
 
@@ -363,12 +328,7 @@ Recent Anomalies: {json.dumps(anomaly_data['anomalies'][:3], indent=2)}
                 model="claude-sonnet-4-6",
                 max_tokens=2048,
                 system="You are an executive business analyst generating formal business reports.",
-                messages=[
-                    {
-                        "role": "user",
-                        "content": f"{context}\n\n{REPORT_DAILY_PROMPT}",
-                    }
-                ],
+                messages=[{"role": "user", "content": f"{context}\n\n{REPORT_DAILY_PROMPT}"}],
             )
             return {
                 "report_id": str(uuid.uuid4()),
@@ -379,10 +339,6 @@ Recent Anomalies: {json.dumps(anomaly_data['anomalies'][:3], indent=2)}
             }
         except Exception:
             return self._mock_report(report_type)
-
-    # ------------------------------------------------------------------
-    # Mock / fallback implementations
-    # ------------------------------------------------------------------
 
     def _mock_answer(self, question: str) -> str:
         return (

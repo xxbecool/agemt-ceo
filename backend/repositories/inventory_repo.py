@@ -15,7 +15,6 @@ class InventoryRepository(BaseRepository[InventoryItem]):
         super().__init__(InventoryItem, session)
 
     async def get_full_inventory(self, tenant_id: UUID) -> List[dict]:
-        """Returns inventory with product and warehouse details."""
         result = await self.session.execute(
             select(
                 InventoryItem.id,
@@ -62,7 +61,6 @@ class InventoryRepository(BaseRepository[InventoryItem]):
         ]
 
     async def get_low_stock_items(self, tenant_id: UUID) -> List[dict]:
-        """Returns items with low or critical stock."""
         result = await self.session.execute(
             select(
                 InventoryItem,
@@ -92,7 +90,6 @@ class InventoryRepository(BaseRepository[InventoryItem]):
         ]
 
     async def get_warehouse_utilization(self, tenant_id: UUID) -> List[dict]:
-        """Returns utilization stats per warehouse."""
         result = await self.session.execute(
             select(
                 Warehouse.id.label("warehouse_id"),
